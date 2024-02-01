@@ -16,19 +16,14 @@ df_2023 = pd.read_excel("system2023DKK.xlsx")
 
 #Pivoting
 data = df_2023
-
 # Melt the dataframe to create a long format
 melted_data = data.melt(id_vars=[data.columns[0]], var_name='Hour', value_name='systemPrice')
-
 # Adjust the 'Hour' column to represent the hour correctly (assuming it starts from 1 to 24)
 melted_data['Hour'] = melted_data['Hour'].astype(int) - 1  # Subtract 1 to align with the 24-hour clock format
-
 # Create a 'DateTime' column by combining the date and hour
 melted_data['DateTime'] = pd.to_datetime(melted_data[data.columns[0]]) + pd.to_timedelta(melted_data['Hour'], unit='h')
-
 # Select only the relevant columns and sort by 'DateTime'
 final_data = melted_data[['DateTime', 'systemPrice']].sort_values(by='DateTime').reset_index(drop=True)
-
 # Save the transformed data to a new Excel file
 output_file_path = 'systemPivot2023.xlsx'  # Specify your desired output file name
 final_data.to_excel(output_file_path, index=False)
@@ -39,7 +34,6 @@ df_2020 = pd.read_excel("systemPivot2020.xlsx")
 df_2021 = pd.read_excel("systemPivot2021.xlsx")
 df_2022 = pd.read_excel("systemPivot2022.xlsx")
 df_2023 = pd.read_excel("systemPivot2023.xlsx")
-
 
 #Changing 2019 into DKK/Mwh
 #Exchange rates EUR DKK: https://www.exchangerates.org.uk/DKK-EUR-exchange-rate-history.html
@@ -62,12 +56,20 @@ df_2023["systemPrice"] = df_2023["systemPrice"] * average_exchange_rate_2023
 
 # Concatenate the dataframes
 combined_df = pd.concat([df_2018, df_2019, df_2020, df_2021, df_2022, df_2023])
-
-
-
 # Optional: Sort by 'DateTime' if needed
 combined_df = combined_df.sort_values(by='DateTime')
 
+#checking for Missing values
+combined_df["DateTime"].isna().sum()
+combined_df["systemPrice"].isna().sum() #6 missing values
 
-combined_df.isna().sum()
-365*24*6
+#plot
+combined_df.set_index('DateTime', inplace=True)
+plt.figure(figsize=(15, 7))  # Set the figure size for better readability
+plt.plot(combined_df.index, combined_df['systemPrice'], label='systemPrice', color='blue')
+plt.title('System Price Over Time (2018-2023)')
+plt.xlabel('Time')
+plt.ylabel('System Price (EUR/MWh)')
+plt.legend()
+plt.gcf().autofmt_xdate()
+plt.show()
