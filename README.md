@@ -1,2 +1,3 @@
 # MasterThesis-
-Hei dette er vår readme fil 
+Hei dette er vår readme fil, dette liker jeg
+
