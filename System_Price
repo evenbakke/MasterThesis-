@@ -28,40 +28,40 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 #Combining all years into one file
-#df_2018 = pd.read_excel("system2018pivot.xlsx")
-#df_2019 = pd.read_excel("system2019pivot.xlsx")
-#df_2020 = pd.read_excel("system2020pivot.xlsx")
-#df_2021 = pd.read_excel("system2021pivot.xlsx")
-#df_2022 = pd.read_excel("system2022pivot.xlsx")
-#df_2023 = pd.read_excel("system2023pivot.xlsx")
+df_2018 = pd.read_excel("system2018pivot.xlsx")
+df_2019 = pd.read_excel("system2019pivot.xlsx")
+df_2020 = pd.read_excel("system2020pivot.xlsx")
+df_2021 = pd.read_excel("system2021pivot.xlsx")
+df_2022 = pd.read_excel("system2022pivot.xlsx")
+df_2023 = pd.read_excel("system2023pivot.xlsx")
 
 #Changing 2019 into DKK/Mwh
-#Exchange rates EUR DKK: https://www.exchangerates.org.uk/DKK-EUR-exchange-rate-history.html
+#Exchange rates EUR DKK: https://www.exchangerates.org.uk/DKK-EUR-exchange-rate-history.htm#l
 
 #Exchange Rates DKK to EUR
 #Year 2018 and 2019 Are already in EUR
-#average_exchange_rate_2020 = 0.1341
-#average_exchange_rate_2021 = 0.1345
-#average_exchange_rate_2022 = 0.1344
-#average_exchange_rate_2023 = 0.1341
+average_exchange_rate_2020 = 0.1341
+average_exchange_rate_2021 = 0.1345
+average_exchange_rate_2022 = 0.1344
+average_exchange_rate_2023 = 0.1341
 #Convert DKK to EUR
-#df_2020["systemPrice"] = df_2020["systemPrice"] * average_exchange_rate_2020
-#df_2021["systemPrice"] = df_2021["systemPrice"] * average_exchange_rate_2021
-#df_2022["systemPrice"] = df_2022["systemPrice"] * average_exchange_rate_2022
-#df_2023["systemPrice"] = df_2023["systemPrice"] * average_exchange_rate_2023
+df_2020["systemPrice"] = df_2020["systemPrice"] * average_exchange_rate_2020
+df_2021["systemPrice"] = df_2021["systemPrice"] * average_exchange_rate_2021
+df_2022["systemPrice"] = df_2022["systemPrice"] * average_exchange_rate_2022
+df_2023["systemPrice"] = df_2023["systemPrice"] * average_exchange_rate_2023
 
 # Concatenate the dataframes
-#combined_df = pd.concat([df_2018, df_2019, df_2020, df_2021, df_2022, df_2023])
+combined_df = pd.concat([df_2018, df_2019, df_2020, df_2021, df_2022, df_2023])
 
 # Removing duplicates based on 'DateTime' column
-#combined_df = combined_df.drop_duplicates(subset='DateTime')
+combined_df = combined_df.drop_duplicates(subset='DateTime')
 
 # Optional: Sort by 'DateTime' if needed
-#combined_df = combined_df.sort_values(by='DateTime')
+combined_df = combined_df.sort_values(by='DateTime')
 
 
-# Save the combined dataframe to a new Excel file
-#combined_df.to_excel('combined_data.xlsx', index=False)
+#Save the combined dataframe to a new Excel file
+combined_df.to_excel('combined_data.xlsx', index=False)
 
 # Convert 'DateTime' to datetime type if it's not already
 combined_df['DateTime'] = pd.to_datetime(combined_df['DateTime'])
