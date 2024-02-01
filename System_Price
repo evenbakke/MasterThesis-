@@ -6,6 +6,7 @@ import plotly.express as px
 import numpy as np
 from statsmodels.tsa.seasonal import seasonal_decompose
 
+df = pd.read_excel("System2018DKK.xls")
 
 #pivoting tables
 #df = pd.read_excel("System20201.xls")
@@ -28,148 +29,33 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 #Combining all years into one file
-#df_2018 = pd.read_excel("system2018pivot.xlsx")
-#df_2019 = pd.read_excel("system2019pivot.xlsx")
-#df_2020 = pd.read_excel("system2020pivot.xlsx")
-#df_2021 = pd.read_excel("system2021pivot.xlsx")
-#df_2022 = pd.read_excel("system2022pivot.xlsx")
-#df_2023 = pd.read_excel("system2023pivot.xlsx")
+df_2018 = pd.read_excel("system2018pivot.xlsx")
+df_2019 = pd.read_excel("system2019pivot.xlsx")
+df_2020 = pd.read_excel("system2020pivot.xlsx")
+df_2021 = pd.read_excel("system2021pivot.xlsx")
+df_2022 = pd.read_excel("system2022pivot.xlsx")
+df_2023 = pd.read_excel("system2023pivot.xlsx")
 
 #Changing 2019 into DKK/Mwh
 #Exchange rates EUR DKK: https://www.exchangerates.org.uk/DKK-EUR-exchange-rate-history.html
 
 #Exchange Rates DKK to EUR
 #Year 2018 and 2019 Are already in EUR
-#average_exchange_rate_2020 = 0.1341
-#average_exchange_rate_2021 = 0.1345
-#average_exchange_rate_2022 = 0.1344
-#average_exchange_rate_2023 = 0.1341
+average_exchange_rate_2020 = 0.1341
+average_exchange_rate_2021 = 0.1345
+average_exchange_rate_2022 = 0.1344
+average_exchange_rate_2023 = 0.1341
 #Convert DKK to EUR
-#df_2020["systemPrice"] = df_2020["systemPrice"] * average_exchange_rate_2020
-#df_2021["systemPrice"] = df_2021["systemPrice"] * average_exchange_rate_2021
-#df_2022["systemPrice"] = df_2022["systemPrice"] * average_exchange_rate_2022
-#df_2023["systemPrice"] = df_2023["systemPrice"] * average_exchange_rate_2023
+df_2020["systemPrice"] = df_2020["systemPrice"] * average_exchange_rate_2020
+df_2021["systemPrice"] = df_2021["systemPrice"] * average_exchange_rate_2021
+df_2022["systemPrice"] = df_2022["systemPrice"] * average_exchange_rate_2022
+df_2023["systemPrice"] = df_2023["systemPrice"] * average_exchange_rate_2023
 
 # Concatenate the dataframes
-#combined_df = pd.concat([df_2018, df_2019, df_2020, df_2021, df_2022, df_2023])
+combined_df = pd.concat([df_2018, df_2019, df_2020, df_2021, df_2022, df_2023])
 
-# Removing duplicates based on 'DateTime' column
-#combined_df = combined_df.drop_duplicates(subset='DateTime')
+
 
 # Optional: Sort by 'DateTime' if needed
-#combined_df = combined_df.sort_values(by='DateTime')
-
-
-# Save the combined dataframe to a new Excel file
-#combined_df.to_excel('combined_data.xlsx', index=False)
-
-# Convert 'DateTime' to datetime type if it's not already
-combined_df['DateTime'] = pd.to_datetime(combined_df['DateTime'])
-
-# Create a complete datetime range from 2018 to 2023
-complete_range = pd.date_range(start='1/1/2018', end='12/31/2023', freq='H')
-
-# Create a DataFrame with this complete range
-complete_df = pd.DataFrame(complete_range, columns=['DateTime'])
-
-# Merge with the original data
-merged_df = pd.merge(complete_df, combined_df, on='DateTime', how='left')
-
-# Interpolate missing values
-merged_df['systemPrice'] = merged_df['systemPrice'].interpolate()
-
-merged_df.isna().sum() #0 missing values
-combined_df.isna().sum() #6 missing values 
-
-
-#plotting each month
-combined_df = pd.DataFrame({
-    'DateTime': pd.date_range(start='1/1/2018', periods=5, freq='Y'),
-    'SystemPrice': [100, 150, 200, 250, 300]
-})
-
-# Convert 'DateTime' to datetime type if it's not already
-combined_df['DateTime'] = pd.to_datetime(combined_df['DateTime'])
-
-def plot_data_for_month_and_year(df, month, year):
-    # Filter data for the specified month and year
-    start_date = f"{year}-{month:02d}-01"
-    end_date = pd.to_datetime(start_date) + pd.offsets.MonthEnd()
-    filtered_df = df[(df['DateTime'] >= start_date) & (df['DateTime'] <= end_date)]
-
-    # Plotting
-    plt.figure(figsize=(10, 6))
-    plt.plot(filtered_df['DateTime'], filtered_df['systemPrice'])
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator())
-    plt.gcf().autofmt_xdate() # Rotate date labels
-    plt.title(f'system Price for {month}/{year}')
-    plt.xlabel('DateTime')
-    plt.ylabel('system Price')
-    plt.grid(True)
-    plt.show()
-
-# Example usage
-plot_data_for_month_and_year(combined_df,7, 2023)  # Plot data for January 2021
-
-
-#MERGED WITHOUTH NA
-merged_df['DateTime'] = pd.to_datetime(merged_df['DateTime'])
-df = data.sort_values(by='DateTime')
-
-# Plotting
-plt.figure(figsize=(12, 6))  # Adjust the size of the plot as needed
-plt.plot(merged_df['DateTime'], merged_df['systemPrice'], label='system Price')
-plt.xlabel('Time')
-plt.ylabel('System Price EUR/MWh')
-plt.title('System Price Over Time')
-plt.legend()
-plt.show()
-
-#COMBINED WITH NA
-combined_df_df['DateTime'] = pd.to_datetime(combined_df['DateTime'])
-df = data.sort_values(by='DateTime')
-
-# Plotting
-plt.figure(figsize=(12, 6))  # Adjust the size of the plot as needed
-plt.plot(combined_df['DateTime'], combined_df['systemPrice'], label='system Price')
-plt.xlabel('Time')
-plt.ylabel('System Price EUR/MWh')
-plt.title('System Price Over Time')
-plt.legend()
-plt.show()
-
-
-#plotting one year
-combined_df_df['DateTime'] = pd.to_datetime(df_2022['DateTime'])
-df = data.sort_values(by='DateTime')
-
-# Plotting #seems correct
-plt.figure(figsize=(12, 6))  # Adjust the size of the plot as needed
-plt.plot(df_2022['DateTime'], df_2022['systemPrice'], label='system Price')
-plt.xlabel('Time')
-plt.ylabel('System Price EUR/MWh')
-plt.ylim(top=800)
-plt.title('System Price Over Time')
-plt.legend()
-plt.show()
-
-#Average Daily Prices
-# Group by day and calculate the average SystemPrice
-daily_avg = merged_df.resample('D', on='DateTime').systemPrice.mean()
-
-plt.figure(figsize=(15, 6))
-plt.plot(daily_avg.index, daily_avg.values)
-
-# Set major locator to YearLocator and formatter to DateFormatter (only showing the year)
-plt.gca().xaxis.set_major_locator(mdates.YearLocator())
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-
-plt.title('Average System Price Per Day (2018-2023)')
-plt.xlabel('Year')
-plt.ylabel('Average System Price EUR/MWh')
-plt.grid(True)
-plt.show()
-
-
+combined_df = combined_df.sort_values(by='DateTime')
 
