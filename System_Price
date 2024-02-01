@@ -14,7 +14,7 @@ df_2021 = pd.read_excel("system2021DKK.xlsx")
 df_2022 = pd.read_excel("system2022DKK.xlsx")
 df_2023 = pd.read_excel("system2023DKK.xlsx")
 
-#Pivoting
+#Pivoting NEED TO MANUALLY CHANGE DF_XXXX IN data and "output_file_path" in ORDER TO CHANGE ALL DFs 
 data = df_2023
 # Melt the dataframe to create a long format
 melted_data = data.melt(id_vars=[data.columns[0]], var_name='Hour', value_name='systemPrice')
