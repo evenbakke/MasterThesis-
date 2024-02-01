@@ -1,2 +1,2 @@
 # MasterThesis-
-new repo 
+Hei dette er vår readme fil 
