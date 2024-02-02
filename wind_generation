@@ -1,0 +1,11 @@
+
+import pandas as pd
+
+wind_2018 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2018.csv")
+wind_2019 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2019.csv")
+wind_2020 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2020.csv")
+wind_2021 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2021.csv")
+wind_2022 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2022.csv")
+wind_2023 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2023.csv")
+
+wind_2018.info()
