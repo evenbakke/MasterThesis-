@@ -63,6 +63,7 @@ combined_df = combined_df.sort_values(by='DateTime')
 combined_df["DateTime"].isna().sum()
 combined_df["systemPrice"].isna().sum() #6 missing values
 
+
 #plot
 combined_df.set_index('DateTime', inplace=True)
 plt.figure(figsize=(15, 7))  # Set the figure size for better readability
@@ -73,3 +74,5 @@ plt.ylabel('System Price (EUR/MWh)')
 plt.legend()
 plt.gcf().autofmt_xdate()
 plt.show()
+
+
