@@ -3,7 +3,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
+#Data Taken from: https://www.statnett.no/for-aktorer-i-kraftbransjen/tall-og-data-fra-kraftsystemet/#produksjon-og-forbruk
 load_2018 = pd.read_excel('/Users/mathiassperre/Desktop/System Load (production Demand)/ProductionConsumption-2018.xls')
 load_2019 = pd.read_excel('/Users/mathiassperre/Desktop/System Load (production Demand)/ProductionConsumption-2019.xls')
 load_2020 = pd.read_excel('/Users/mathiassperre/Desktop/System Load (production Demand)/ProductionConsumption-2020.xls')
