@@ -27,7 +27,7 @@ plt.plot(combined_load['Time(Local)'], combined_load['Production'], label='Produ
 plt.plot(combined_load['Time(Local)'], combined_load['Consumption'], label='Consumption', color='red')
 plt.title('Production and Consumption over Time')
 plt.xlabel('Time')
-plt.ylabel('Value')
+plt.ylabel('MW')
 plt.legend()
 plt.xticks(rotation=45)
 plt.tight_layout()  # Adjust the layout to make room for the rotated date labels

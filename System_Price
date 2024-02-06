@@ -7,12 +7,12 @@ import numpy as np
 
 
 #Importing Data
-df_2018 = pd.read_excel("system2018DKK.xlsx")
-df_2019 = pd.read_excel("system2019DKK.xlsx")
-df_2020 = pd.read_excel("system2020DKK.xlsx")
-df_2021 = pd.read_excel("system2021DKK.xlsx")
-df_2022 = pd.read_excel("system2022DKK.xlsx")
-df_2023 = pd.read_excel("system2023DKK.xlsx")
+df_2018 = pd.read_excel("/Users/mathiassperre/Downloads/SystemPrice Master New 2/System2018DKK.xlsx")
+df_2019 = pd.read_excel("/Users/mathiassperre/Downloads/SystemPrice Master New 2/System2019DKK.xlsx")
+df_2020 = pd.read_excel("/Users/mathiassperre/Downloads/SystemPrice Master New 2/System2020DKK.xlsx")
+df_2021 = pd.read_excel("/Users/mathiassperre/Downloads/SystemPrice Master New 2/System2021DKK.xlsx")
+df_2022 = pd.read_excel("/Users/mathiassperre/Downloads/SystemPrice Master New 2/System2022DKK.xlsx")
+df_2023 = pd.read_excel("/Users/mathiassperre/Downloads/SystemPrice Master New 2/System2023DKK.xlsx")
 
 #Pivoting NEED TO MANUALLY CHANGE DF_XXXX IN data and "output_file_path" in ORDER TO CHANGE ALL DFs 
 data = df_2023
@@ -28,12 +28,12 @@ final_data = melted_data[['DateTime', 'systemPrice']].sort_values(by='DateTime')
 output_file_path = 'systemPivot2023.xlsx'  # Specify your desired output file name
 final_data.to_excel(output_file_path, index=False)
 
-df_2018 = pd.read_excel("systemPivot2018.xlsx")
-df_2019 = pd.read_excel("systemPivot2019.xlsx")
-df_2020 = pd.read_excel("systemPivot2020.xlsx")
-df_2021 = pd.read_excel("systemPivot2021.xlsx")
-df_2022 = pd.read_excel("systemPivot2022.xlsx")
-df_2023 = pd.read_excel("systemPivot2023.xlsx")
+df_2018 = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/SystemPrice Master New/systemPivot2018.xlsx")
+df_2019 = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/SystemPrice Master New/systemPivot2019.xlsx")
+df_2020 = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/SystemPrice Master New/systemPivot2020.xlsx")
+df_2021 = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/SystemPrice Master New/systemPivot2021.xlsx")
+df_2022 = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/SystemPrice Master New/systemPivot2022.xlsx")
+df_2023 = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/SystemPrice Master New/systemPivot2023.xlsx")
 
 #Changing 2019 into DKK/Mwh
 #Exchange rates EUR DKK: https://www.exchangerates.org.uk/DKK-EUR-exchange-rate-history.html
@@ -57,8 +57,9 @@ df_2023["systemPrice"] = df_2023["systemPrice"] * average_exchange_rate_2023
 # Concatenate the dataframes
 combined_df = pd.concat([df_2018, df_2019, df_2020, df_2021, df_2022, df_2023])
 # Optional: Sort by 'DateTime' if needed
-combined_df = combined_df.sort_values(by='DateTime')
+#combined_df = combined_df.sort_values(by='DateTime')
 
+combined_df.to_excel("System_combined.xlsx")
 #checking for Missing values
 combined_df["DateTime"].isna().sum()
 combined_df["systemPrice"].isna().sum() #6 missing values

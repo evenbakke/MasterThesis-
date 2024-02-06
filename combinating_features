@@ -1,0 +1,38 @@
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+wind = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/Wind_Generation_2018-2023NO.xlsx")
+price = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/System_combined.xlsx")
+load = pd.read_excel("/Users/mathiassperre/Documents/GitHub/MasterThesis-/load_combined.xlsx")
+
+wind.head()
+price.tail()
+load.head()
+
+
+
+#setting datetime as index
+wind.set_index('Start', inplace=True)
+price.set_index('DateTime', inplace=True)
+load.set_index('Time(Local)', inplace=True)
+
+
+# Merge 'wind' and 'price' on their index (datetime) using an outer join to keep all dates
+df_merged = pd.merge(wind, price, left_index=True, right_index=True, how='outer')
+
+# Merge the result with 'load' on its index (datetime) using an outer join to keep all dates
+df_final = pd.merge(df_merged, load, left_index=True, right_index=True, how='outer')
+df_final.tail(50)
+# Now, 'df_final' contains all columns from 'wind', 'price', and 'load', indexed by datetime
+df_final.isna().sum()
+
+
+
+# Assuming df_final is your combined DataFrame
+correlation_matrix = df_final.corr()
+
+# Print the correlation matrix
+print(correlation_matrix)
+
