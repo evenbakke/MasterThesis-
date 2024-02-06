@@ -1,5 +1,9 @@
 
 import pandas as pd
+import matplotlib as plt
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import plotly.express as px
 
 wind_2018 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2018.csv")
 wind_2019 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2019.csv")
@@ -8,4 +12,47 @@ wind_2021 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation F
 wind_2022 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2022.csv")
 wind_2023 = pd.read_csv("/Users/mathiassperre/Desktop/Wind forecast/Generation Forecasts for Wind and Solar_2023.csv")
 
-wind_2018.info()
+wind_2018 = wind_2018[["MTU (CET/CEST)", "Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)"]]
+wind_2019 = wind_2019[["MTU (CET/CEST)", "Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)"]]
+wind_2020 = wind_2020[["MTU (CET/CEST)", "Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)"]]
+wind_2021 = wind_2021[["MTU (CET/CEST)", "Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)"]]
+wind_2022 = wind_2022[["MTU (CET/CEST)", "Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)"]]
+wind_2023 = wind_2023[["MTU (CET/CEST)", "Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)"]]
+
+# Define a function to convert the first column into datetime and reformat the DataFrame
+def convert_datetime(df):
+    df[['Start', 'End']] = df['MTU (CET/CEST)'].str.split(' - ', expand=True)
+    df['Start'] = pd.to_datetime(df['Start'], format='%d.%m.%Y %H:%M')
+    df.set_index('Start', inplace=True)
+    df.drop(columns=['MTU (CET/CEST)', 'End'], inplace=True)
+    return df
+
+# List of your DataFrames
+dfs = [wind_2018, wind_2019, wind_2020, wind_2021, wind_2022, wind_2023]
+
+# Apply the function to each DataFrame
+for df in dfs:
+    convert_datetime(df)
+
+# Concatenate the dataframes
+combined_wind = pd.concat([wind_2018, wind_2019, wind_2020, wind_2021, wind_2022, wind_2023])
+#Changing the name of columns
+combined_wind.rename(columns={'Generation - Wind Onshore  [MW] Day Ahead/ Norway (NO)': 'day_ahead_wind_generation_NO'}, inplace=True)
+#combined_wind.isna().sum() #585 Missing values
+#combined_wind[0:1].isna().sum() #0 missing values in datetime
+
+
+#plot
+combined_wind.set_index('DateTime', inplace=True)
+
+combined_wind.to_excel("Wind_Generation_2018-2023NO.xlsx")
+
+plt.figure(figsize=(15, 7))  # Set the figure size for better readability
+plt.plot(combined_wind.index, combined_wind['day_ahead_wind_generation_NO'], label='Onshore Wind Generation NO (MW)', color='blue')
+plt.title('Wind generation over time (2018-2023)')
+plt.xlabel('Time')
+plt.ylabel('wind Generation MWh')
+plt.legend()
+plt.gcf().autofmt_xdate()
+plt.show()
+
