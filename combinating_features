@@ -28,7 +28,9 @@ df_final.tail(50)
 # Now, 'df_final' contains all columns from 'wind', 'price', and 'load', indexed by datetime
 df_final.isna().sum()
 
+df_final.drop("Unnamed: 0_x")
 
+df_final = df_final[["day_ahead_wind_generation_NO", "systemPrice", "Production", "Consumption"]]
 
 # Assuming df_final is your combined DataFrame
 correlation_matrix = df_final.corr()
