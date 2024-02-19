@@ -8,7 +8,7 @@ import json
 import matplotlib
 
 #Bidding zones NO1 Hentet fra NVE: https://temakart.nve.no/link/?link=vannkraft
-shapefile_path = "C:\\Users\\mathi\\Downloads\\Export\\Polyline.shp"
+shapefile_path = "C:\\Users\\mathi\\Downloads\\NO4\\Polyline.shp"
 gdf = gpd.read_file(shapefile_path)
 # Convert the GeoDataFrame to GeoJSON
 geojson = gdf.to_json()
@@ -18,22 +18,10 @@ print(geojson)
 # Initialize transformer to convert from ETRS89 / UTM zone 33N (EPSG:25833) to WGS 84 (EPSG:4326)
 transformer = Transformer.from_crs("epsg:25833", "epsg:4326", always_xy=True)
 
-#UTM coordinates
-utm_coordinates = [
-    [352047.55168910336, 6962126.10481759],
-    [345274.20480907627, 6643101.466768313],
-    [308698.13165692997, 6530663.908559863],
-    [251802.01786470236, 6534727.91668788],
-    [241641.99754466172, 6626845.434256248],
-    [198292.57751248832, 6595010.703920121],
-    [167135.18186436367, 6673581.527728436],
-    [219289.9528405723, 6708802.9315045765],
-    [136655.12090424175, 6828013.836593053],
-    [236223.32004064004, 6874749.93006524],
-    [353402.2210651088, 6962803.439505592],
-    [352724.8863771061, 6961448.770129587]
-]
 
+# NO AREA UTM coordinates
+utm_coordinates = [[299892.78071289486, 7265572.045042808], [410975.66954533925, 7583919.348404082], [760480.3685547373, 7896847.974261333], [967744.7830835665, 7964581.443061604], [1127595.7694522059, 7888719.958005301], [1054443.6231479133, 7722095.624756634], [988064.8237236477, 7826405.1667090515], [902720.6530353063, 7640815.462196309], [750997.6829226994, 7697711.575988537], [595210.7046820762, 7550052.614003946], [513930.54212175106, 7348206.876979139], [447551.74269748555, 7101657.0505461525], [302602.1194649057, 7265572.045042808]
+]
 # Convert each coordinate to WGS 84 and format as POLYGON string
 wkt_polygon = "POLYGON(("
 for coord in utm_coordinates:
@@ -48,10 +36,11 @@ print(wkt_polygon)
 # There we can insert the Polygon() command to extract all measuring systems within this geographical area. Below we will extract the IDs and Names of all the listed measuring points.
 #and put them into the api to collect data.
 
-
+#The code belows takes in the result from their website from POLYGON, and loads it in as json. From here, ID and Name is extracted. The ids are then split into chunks of
+# lists with 25 values, to then be parsed one at a time to METs API. We then transform datacolumn into datetime and sorts the df before saving it to a csv
 
 # Path to the file
-file_path = 'C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\MasterThesis-\\NO1 Måler Temperatur FrostAPI.txt'
+file_path = "C:\\Users\\mathi\\OneDrive\\Dokumenter\\Skole\Master Thesis\\FROST MET API\\NO5 Måler TemperaturFrostAPI.txt"
 
 # Load JSON data
 with open(file_path, 'r', encoding='utf-8') as file:
@@ -64,16 +53,12 @@ sensors_list = [{'id': sensor['id'], 'name': sensor['name']} for sensor in senso
 # Create a DataFrame
 df_sensors = pd.DataFrame(sensors_list)
 # Display the first few rows to ensure it's been created correctly
-df_sensors.head()
+df_sensors.info()
 
 
 
 
-
-
-file_path = 'C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\MasterThesis-\\NO1 Måler Temperatur FrostAPI.txt'
-
-# Read the file
+#Extracting IDs
 with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)
 
@@ -90,56 +75,11 @@ for item in data['data']:
 # Print the list of IDs (optional)
 print("List of IDs:", ids)
 
-
-#Getting the Data
-client_id = "aec37807-25c0-4318-b883-f18837c9b3bb"
-
-# Define endpoint and parameters
-endpoint = 'https://frost.met.no/observations/v0.jsonld'
-parameters = {
-    'sources' :'SN23670, SN12590, SN26640, SN18269, SN18700, SN19660, SN18260',
-    'elements': 'mean(air_temperature P1D)',
-    'referencetime': '2018-01-01/2023-12-31',
-}
-# Issue an HTTP GET request
-r = requests.get(endpoint, parameters, auth=(client_id,''))
-# Extract JSON data
-json = r.json()
-
-# Check if the request worked, print out any errors
-if r.status_code == 200:
-    data = json['data']
-    print('Data retrieved from frost.met.no!')
-else:
-    print('Error! Returned status code %s' % r.status_code)
-    print('Message: %s' % json['error']['message'])
-    print('Reason: %s' % json['error']['reason'])
-
-# Assuming 'data' is your list of dictionaries from the JSON response
-rows = []  # Initialize an empty list to collect dataframes
-for item in data:
-    row = pd.DataFrame(item['observations'])
-    row['referenceTime'] = item['referenceTime']
-    row['sourceId'] = item['sourceId']
-    rows.append(row)  # Append the dataframe to the list
-
-# Concatenate all dataframes in the list into a single dataframe
-df = pd.concat(rows, ignore_index=True)
-df.info()
-
-
-
 #-------------------------------------
+#GETTING DATA
 
-#FUNKER
-
-# Load and parse the JSON data to get IDs
-file_path = 'C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\MasterThesis-\\NO1 Måler Temperatur FrostAPI.txt'
 with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)
-
-# Extract IDs
-ids
 
 # Function to split the sensor_ids list into chunks of a given size
 def chunk_list(lst, n):
@@ -192,22 +132,11 @@ for chunk in id_chunks:
 df_final = pd.concat(rows, ignore_index=True)
 
 # Display the final DataFrame
-print(df_final.head(25))
+print(df_final.tail(25))
 df_final.info()
 
 
 df_final['referenceTime'] = pd.to_datetime(df_final['referenceTime'])
-
-# Then, group by 'referenceTime' and calculate the mean temperature for each group
-mean_temperature_over_time = df_final.groupby('referenceTime')['value'].mean()
-
-# The result is a Series with the mean temperature for each time point
-# To work with this as a DataFrame, you can reset the index
-mean_temperature_df = mean_temperature_over_time.reset_index()
-
-# Rename columns for clarity
-mean_temperature_df.columns = ['Reference Time', 'Mean Temperature']
-
-# Now, mean_temperature_df contains the average temperature for the entire area over time
-#df_final.to_excel("NO1.xlsx")
-
+df_final_sorted = df_final.sort_values(by="referenceTime")
+df_final_sorted.to_csv("NO5Temp.csv")
+df_final.tail(25)
