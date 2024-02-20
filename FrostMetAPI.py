@@ -5,7 +5,7 @@ import pandas as pd
 import geopandas as gpd
 from pyproj import Transformer
 import json
-import matplotlib
+import matplotlib.pyplot as plt
 
 #Bidding zones NO1 Hentet fra NVE: https://temakart.nve.no/link/?link=vannkraft
 shapefile_path = "C:\\Users\\mathi\\Downloads\\NO4\\Polyline.shp"
@@ -54,8 +54,6 @@ sensors_list = [{'id': sensor['id'], 'name': sensor['name']} for sensor in senso
 df_sensors = pd.DataFrame(sensors_list)
 # Display the first few rows to ensure it's been created correctly
 df_sensors.info()
-
-
 
 
 #Extracting IDs
@@ -142,4 +140,51 @@ df_final_sorted.to_csv("NO5Temp.csv")
 df_final.tail(25)
 
 
+#plotting and computing mean values for every Bidding Zone.
+
+no1 = pd.read_csv('C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\\MasterThesis-\\FROST MET API\\NO1Temp.csv')
+no2 = pd.read_csv('C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\\MasterThesis-\\FROST MET API\\NO2Temp.csv')
+no3 = pd.read_csv('C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\\MasterThesis-\\FROST MET API\\NO3Temp.csv')
+no4 = pd.read_csv('C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\\MasterThesis-\\FROST MET API\\NO4Temp.csv')
+no5 = pd.read_csv('C:\\Users\\mathi\\OneDrive\\Dokumenter\\GitHub\\MasterThesis-\\FROST MET API\\NO5Temp.csv')
+
+no1["sourceId"].nunique() #200 unique stations
+no2["sourceId"].nunique() #200 Unique stations
+no3["sourceId"].nunique() #194 Unique stations
+no4["sourceId"].nunique() #207 unique stations
+no5["sourceId"].nunique() #107 unique stations
+
+
+
+dfs = [no1,no2,no3,no4,no5]
+for df in dfs:
+    df['referenceTime'] = pd.to_datetime(df['referenceTime'])
+    df.sort_values(by='referenceTime')
+
+#this needs to be manually changed from no1 to no5
+no5['referenceTime'] = pd.to_datetime(no5['referenceTime'])
+
+# Group by the date part of 'referenceTime' and calculate the mean of 'value'
+no5_daily_mean = no5.groupby(no5['referenceTime'].dt.date)['value'].mean().reset_index()
+
+# Convert 'referenceTime' back to datetime format if necessary
+no5_daily_mean['referenceTime'] = pd.to_datetime(no5_daily_mean['referenceTime'])
+
+
+dfs = [no1_daily_mean, no2_daily_mean, no3_daily_mean, no4_daily_mean,no5_daily_mean]
+fig, axs = plt.subplots(5, 1, figsize=(10, 12))  # 5 rows, 1 column
+
+# Titles for each subplot (optional)
+titles = ['NO1', 'NO2', 'NO3', 'NO4', 'NO5'  ]
+
+for ax, df, title in zip(axs, dfs, titles):
+    ax.plot(df['referenceTime'], df['value'], marker='', linestyle='solid')
+    ax.set_title(title)
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Temperature Degc')
+    ax.grid(True)
+    ax.tick_params(axis='x', labelrotation=45)
+
+plt.tight_layout()  # Adjust layout to make room for labels
+plt.show()
 
